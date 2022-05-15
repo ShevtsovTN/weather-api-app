@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Modules\Weather\Events\WeatherPullEvent;
 use Modules\Weather\Services\WeatherApiService;
 use Modules\Weather\Services\WeatherService;
 use Throwable;
@@ -24,23 +25,25 @@ class GetWeatherJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(WeatherApiService $weatherApiService)
+    public function __construct()
     {
-        $this->weatherApiService = $weatherApiService;
+        //
     }
 
     /**
      * Execute the job.
      *
+     * @param WeatherApiService $weatherApiService
      * @return void
      * @throws Throwable
      */
-    public function handle(): void
+    public function handle(WeatherApiService $weatherApiService, WeatherService $weatherService): void
     {
         $cities = City::all();
         foreach ($cities as $city) {
-            $weatherDto = $this->weatherApiService->getWeatherFromApi($city->city_name);
-            WeatherService::save($weatherDto);
+            $weatherDto = $weatherApiService->getWeatherFromApi($city->city_name);
+            $weatherService::save($weatherDto);
         }
+        event(new WeatherPullEvent());
     }
 }

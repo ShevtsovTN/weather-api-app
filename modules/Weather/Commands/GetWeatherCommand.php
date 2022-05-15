@@ -2,11 +2,8 @@
 
 namespace Modules\Weather\Commands;
 
-use App\Models\City;
 use Illuminate\Console\Command;
 use Modules\Weather\Jobs\GetWeatherJob;
-use Modules\Weather\Services\WeatherApiService;
-use Modules\Weather\Services\WeatherService;
 use Throwable;
 
 class GetWeatherCommand extends Command
@@ -28,8 +25,8 @@ class GetWeatherCommand extends Command
     /**
      * @throws Throwable
      */
-    public function handle(WeatherApiService $weatherApiService)
+    public function handle()
     {
-        GetWeatherJob::dispatch($weatherApiService);
+        GetWeatherJob::dispatch();
     }
 }

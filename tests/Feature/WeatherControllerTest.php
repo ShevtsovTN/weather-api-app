@@ -15,13 +15,37 @@ class WeatherControllerTest extends TestCase
      *
      * @return void
      */
-    public function test_show()
+    public function test_show_success()
     {
-        $response = $this->get(route('weather.show', [
-            'weather_date' => Carbon::now()->format('Y-m-d')
-        ]));
+        if (Weather::where('weather_date', Carbon::now()->format('Y-m-d'))->doesntExist()) {
+            $spy = $this->spy(WeatherApiService::class);
 
-        $response->assertStatus(200);
+            $responseSuccess = $this->get(route('weather.show', [
+                'weather_date' => Carbon::now()->format('Y-m-d')
+            ]));
+            $responseSuccess->assertStatus(200);
+            $spy->shouldHaveReceived('getWeatherFromApi');
+        }
+
+        if (Weather::where('weather_date', Carbon::now()->subDay()->format('Y-m-d'))->exists()) {
+            $responseSuccess = $this->get(route('weather.show', [
+                'weather_date' => Carbon::now()->subDay()->format('Y-m-d')
+            ]));
+            $responseSuccess->assertStatus(200);
+        }
+    }
+
+    /**
+     * A basic feature test example.
+     *
+     * @return void
+     */
+    public function test_show_failure()
+    {
+        $responseFail = $this->get(route('weather.show', [
+            'weather_date' => Carbon::now()->addDay()->format('Y-m-d')
+        ]));
+        $responseFail->assertStatus(404);
     }
 
     /**

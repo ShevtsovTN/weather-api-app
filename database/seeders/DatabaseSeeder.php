@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Modules\Weather\database\seeders\WeatherSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            CitySeeder::class
+            WeatherSeeder::class,
+            CitySeeder::class,
         ]);
     }
 }
