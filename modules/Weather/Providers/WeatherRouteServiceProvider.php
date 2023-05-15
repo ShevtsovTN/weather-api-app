@@ -31,6 +31,6 @@ class WeatherRouteServiceProvider extends RouteServiceProvider
     {
         Route::prefix('api')
             ->middleware('api')
-            ->group(base_path('modules\Weather\routes\api.php'));
+            ->group(base_path('modules/Weather/routes/api.php'));
     }
 }
